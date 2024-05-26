@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -41,7 +42,7 @@ public class Booking {
 	private VehicleRequestResponse vehicleRequestResponse;
 	
 	@Column
-	private Date bookingDate;
+	private LocalDate bookingDate;
 	
 	@Column
 	private String driverName;

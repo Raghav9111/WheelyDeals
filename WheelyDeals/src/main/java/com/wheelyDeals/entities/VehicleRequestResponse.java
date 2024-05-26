@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -38,7 +39,7 @@ public class VehicleRequestResponse {
 	private ServiceProviderVehicle serviceProviderVehicle;
 	
 	@Column(nullable=false)
-	private Date responseDate;
+	private LocalDate responseDate;
 	
 	@Column(nullable = false)
 	private String responseStatus;

@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -39,16 +40,16 @@ public class VehicleRequest {
 	private String destination;
 	
 	@Column(nullable = false)
-	private Date requestDate;
+	private LocalDate requestDate;
 	
 	@Column
 	private String description;
 	
 	@Column(nullable = false)
-	private Date tripStartDate;
+	private LocalDate tripStartDate;
 	
 	@Column(nullable = false)
-	private Date tripEndDate;
+	private LocalDate tripEndDate;
 	
 	@Column(nullable = false)
 	private Boolean isAc;

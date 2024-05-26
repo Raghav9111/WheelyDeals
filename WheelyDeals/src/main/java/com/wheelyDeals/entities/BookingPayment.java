@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -29,7 +30,7 @@ public class BookingPayment {
 	private Booking booking;
 	
 	@Column(nullable = false)
-	private Date paymentDate;
+	private LocalDate paymentDate;
 	
 	@Column(nullable = false)
 	private Integer amount;

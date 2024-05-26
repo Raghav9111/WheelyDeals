@@ -1,6 +1,7 @@
 package com.wheelyDeals.entities;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -40,5 +41,5 @@ public class ServiceFeedback {
 	private Customer customer;
 	
 	@Column
-	private Date feedbackDate;
+	private LocalDate feedbackDate;
 }
