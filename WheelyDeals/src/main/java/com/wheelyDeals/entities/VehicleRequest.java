@@ -26,11 +26,11 @@ public class VehicleRequest {
 	private Integer vehicleRequestId;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name="customer",nullable = false)
 	private Customer customer;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name="vehicle_master",nullable = false)
 	private VehicleMaster vehicleMaster;
 	
 	@Column(nullable = false)

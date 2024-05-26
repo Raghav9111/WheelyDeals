@@ -26,7 +26,7 @@ public class BookingPayment {
 	private Integer paymentId;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="booking")
 	private Booking booking;
 	
 	@Column(nullable = false)

@@ -27,15 +27,15 @@ public class VehicleRequestResponse {
 	private Integer responseId;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="service_provider")
 	private ServiceProvider serviceProvider;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="vehicle_request")
 	private VehicleRequest vehicleRequest;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="service_provider_vehicle")
 	private ServiceProviderVehicle serviceProviderVehicle;
 	
 	@Column(nullable=false)

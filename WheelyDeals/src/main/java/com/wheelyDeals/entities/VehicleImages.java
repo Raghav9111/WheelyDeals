@@ -29,6 +29,6 @@ public class VehicleImages {
 	private List<String> images;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="service_provider_vehicle")
 	private ServiceProviderVehicle serviceProviderVehicle;
 }

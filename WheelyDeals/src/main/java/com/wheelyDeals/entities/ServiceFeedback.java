@@ -33,11 +33,11 @@ public class ServiceFeedback {
 	private Integer rating;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="service_provider")
 	private ServiceProvider serviceProvider;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="customer")
 	private Customer customer;
 	
 	@Column

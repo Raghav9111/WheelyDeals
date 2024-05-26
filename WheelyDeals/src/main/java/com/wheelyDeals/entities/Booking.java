@@ -26,19 +26,19 @@ public class Booking {
 	private Integer bookingId;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="service_provider")
 	private ServiceProvider serviceProvider;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="customer")
 	private Customer customer;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="vehicle_request")
 	private VehicleRequest vehicleRequest;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="vehicle_request_response")
 	private VehicleRequestResponse vehicleRequestResponse;
 	
 	@Column
