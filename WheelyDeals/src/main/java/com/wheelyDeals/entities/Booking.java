@@ -51,11 +51,11 @@ public class Booking {
 	private String driverPhone;
 	
 	@Column(nullable = false)
-	private Date tripStartDate;
+	private LocalDate tripStartDate;
 	
 
 	@Column(nullable = false)
-	private Date tripEndDate;
+	private LocalDate tripEndDate;
 	
 	@Column
 	private Integer startMeter;
