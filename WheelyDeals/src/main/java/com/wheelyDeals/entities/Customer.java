@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer extends User{
+	
+	
 	@Column(name="customer_name", nullable = false)
 	private String customerName;
 	
