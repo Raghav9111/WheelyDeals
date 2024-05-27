@@ -17,5 +17,4 @@ public class CustomerRegistrationModel
 	
 	private String mobile;
 	
-	private Boolean activeStatus;
 }

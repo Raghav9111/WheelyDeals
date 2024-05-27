@@ -27,14 +27,5 @@ public class UserService implements UserDetailsService {
 		User user = userRepo.findById(int1).get();
 		return user;
 	}
-
-	public User saveUser(String email, String password, String role,Boolean b) 
-	{
-		User user = new User(email, password, role,b);
-		userRepo.save(user);
-		
-		return user;
-	}
-	
 	
 }

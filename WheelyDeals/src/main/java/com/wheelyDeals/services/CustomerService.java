@@ -29,17 +29,14 @@ public class CustomerService
 	public ApiResponse saveCust(CustomerRegistrationModel cusmodel) {
 		ApiResponse response = null;
 		try {
-			
-			User user = userService.saveUser(cusmodel.getEmail(),encoder.encode(cusmodel.getPassword()),"ROLE_CUSTOMER",false);
-			
-			Customer customer = new Customer(cusmodel.getCustomerName(),cusmodel.getMobile());
-			customer.setUserId(user.getUserId());
-			customer.setActiveStatus(user.getActiveStatus());
-			
-			custRepo.save(customer);
-			
-			
-			response = new ApiResponse(true, "Customer Saved !");
+			Customer customer = new Customer(cusmodel.getEmail(), cusmodel.getPassword(), "ROLE_CUSTOMER", false, cusmodel.getCustomerName(), cusmodel.getMobile());
+			if(customer != null) {
+				customer = custRepo.save(customer);
+				response = new ApiResponse(true, "Customer Saved !");
+			}
+			else {
+				response = new ApiResponse(false, "Customer not Saved !");
+			}
 		}catch(Exception ex) {
 			System.err.println(ex.getMessage());
 			response = new ApiResponse(false, "Customer Save Failed !", ex.getMessage());
