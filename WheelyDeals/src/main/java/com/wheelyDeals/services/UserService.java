@@ -1,5 +1,7 @@
 package com.wheelyDeals.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +20,7 @@ public class UserService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findByEmail(username).get();
 	}
 
 	public User getById(Integer int1) 
@@ -28,4 +29,13 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 	
+	public Optional<User> findByEmail(String email) 
+	{
+		return userRepo.findByEmail(email);
+	}
+
+	public void update(User user) 
+	{
+		userRepo.save(user);
+	}
 }
