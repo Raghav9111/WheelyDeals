@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -23,10 +24,12 @@ public class Customer extends User{
 	@Column(name="mobile", nullable = false, unique = true)
 	private String mobile;
 
-	public Customer(String email, String password, String role, Boolean activeStatus, String customerName,
-			String mobile) {
-		super(email, password, role, activeStatus);
+	public Customer(String email, String password, String role, Boolean activeStatus, LocalDate regDate,
+			Boolean isblock, String customerName, String mobile) {
+		super(email, password, role, activeStatus, regDate, isblock);
 		this.customerName = customerName;
 		this.mobile = mobile;
-	}	
+	}
+
+
 }
