@@ -1,5 +1,6 @@
 package com.wheelyDeals.entities;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -19,12 +20,14 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED) 
 public class User implements UserDetails
 {
-	public User(String email, String password, String role, Boolean activeStatus) {
+	public User(String email, String password, String role, Boolean activeStatus,LocalDate regDate,Boolean isblock) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.role = role;
 		this.activeStatus = activeStatus;
+		this.regDate = regDate;
+		this.isblock = isblock;
 	}
 
 	@Id
@@ -44,6 +47,12 @@ public class User implements UserDetails
 	@Column(name="active_status", nullable = false)
 	private Boolean activeStatus;
 
+	@Column(name="registration_date")
+	private LocalDate regDate;
+	
+	@Column(name="isblock")
+	private Boolean isblock;
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.getRole());

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,9 @@ import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.CustomerRegistrationModel;
 import com.wheelyDeals.model.LoginModel;
 import com.wheelyDeals.model.LoginResponseModel;
+import com.wheelyDeals.model.ServiceProviderRegistrationModel;
 import com.wheelyDeals.services.CustomerService;
+import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.UserService;
 import com.wheelyDeals.utils.ApiResponse;
 
@@ -32,6 +35,9 @@ public class WebController
 {
 	@Autowired
 	private AuthenticationManager authmanager;
+
+	@Autowired
+	private ServiceProviderService providerService;
 	
 	@Autowired
 	private CustomerService custService;
@@ -47,6 +53,13 @@ public class WebController
 	public ApiResponse saveCust(@RequestBody CustomerRegistrationModel cusmodel)
 	{
 		ApiResponse response= custService.saveCust(cusmodel);
+		return response;
+	}
+	
+	@PostMapping("/saveServiceProvider")
+	public ApiResponse saveServProvider(@RequestBody ServiceProviderRegistrationModel model)
+	{
+		ApiResponse response= providerService.saveProvider(model);
 		return response;
 	}
 	
@@ -90,4 +103,5 @@ public class WebController
 			return new ApiResponse(false, "Wrong Email !");
 		}
 	}
+	
 }

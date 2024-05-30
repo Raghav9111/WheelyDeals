@@ -1,9 +1,12 @@
 package com.wheelyDeals.services;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.wheelyDeals.entities.Customer;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.CustomerRegistrationModel;
@@ -30,8 +33,10 @@ public class CustomerService
 
 	public ApiResponse saveCust(CustomerRegistrationModel cusmodel) {
 		ApiResponse response = null;
+		
 		try {
-			Customer customer = new Customer(cusmodel.getEmail(), encoder.encode( cusmodel.getPassword()), "ROLE_CUSTOMER", false, cusmodel.getCustomerName(), cusmodel.getMobile());
+			LocalDate date = LocalDate.now();     
+			Customer customer = new Customer(cusmodel.getEmail(), encoder.encode( cusmodel.getPassword()), "ROLE_CUSTOMER", false,date,false, cusmodel.getCustomerName(), cusmodel.getMobile());
 			if(customer != null) {
 				customer = custRepo.save(customer);
 				mailService.verificationMail(cusmodel.getEmail(),cusmodel.getCustomerName());
