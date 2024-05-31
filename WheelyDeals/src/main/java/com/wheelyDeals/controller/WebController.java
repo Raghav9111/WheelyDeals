@@ -124,8 +124,6 @@ public class WebController
 		}
 		else
 			return new ApiResponse(false, "email not found !");
-	
-		
 	}
 	
 	@PostMapping("/verifyOtp")
@@ -137,16 +135,13 @@ public class WebController
 		if(op.isPresent())
 		{
 			User user = op.get();
-Optional<Otp> otp = otpService.findByUser(user);
-			
+			Optional<Otp> otp = otpService.findByUser(user);	
 			if(otp.isPresent())
 			{
 				Otp ob =  otp.get();
-				
 				Boolean b = ob.getOtpNumber().matches(model.otp);
 				if(b)
 				{
-
 					res = new ApiResponse(true, "OTP is Correct !");
 				}
 				else
@@ -158,15 +153,12 @@ Optional<Otp> otp = otpService.findByUser(user);
 		else
 			return new ApiResponse(false, "email not found !");
 		return res;
-		
-		
 	}
 	
-	@PostMapping("/changePass")
+	@PatchMapping("/changePass")
 	public ApiResponse changePass(@RequestBody OtpVerifyModel model)
 	{
 		ApiResponse res = null;
-		
 		try
 		{
 			 res = userService.updatePass(model,2);
@@ -176,7 +168,5 @@ Optional<Otp> otp = otpService.findByUser(user);
 		{
 			return new ApiResponse(false, "error", ex.getMessage());
 		}
-		
 	}
-	
 }
