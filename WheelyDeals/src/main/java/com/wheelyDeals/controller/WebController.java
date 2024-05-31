@@ -12,17 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wheelyDeals.config.JwtTokenUtil;
+import com.wheelyDeals.entities.Otp;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.CustomerRegistrationModel;
+import com.wheelyDeals.model.OtpVerifyModel;
 import com.wheelyDeals.model.LoginModel;
 import com.wheelyDeals.model.LoginResponseModel;
 import com.wheelyDeals.model.ServiceProviderRegistrationModel;
+import com.wheelyDeals.model.UpdatePasswordModel;
 import com.wheelyDeals.services.CustomerService;
+import com.wheelyDeals.services.OtpService;
 import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.UserService;
 import com.wheelyDeals.utils.ApiResponse;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +49,9 @@ public class WebController
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private OtpService otpService;
 	
 	@Autowired
 	private JwtTokenUtil jwtToken;
@@ -102,6 +110,73 @@ public class WebController
 		}else {
 			return new ApiResponse(false, "Wrong Email !");
 		}
+	}
+	
+	@PatchMapping("/forget_pass")
+	public ApiResponse updatePassword(@RequestBody UpdatePasswordModel model )
+	{
+		Optional<User> op = userService.findByEmail(model.getEmail());
+		if(op.isPresent())
+		{
+			User user = op.get();
+			ApiResponse res= userService.sendOtp(model.getEmail(),user);
+			 return new ApiResponse(true, "otp sent");
+		}
+		else
+			return new ApiResponse(false, "email not found !");
+	
+		
+	}
+	
+	@PostMapping("/verifyOtp")
+	public ApiResponse verifyOtp(@RequestBody OtpVerifyModel model)
+	{
+		ApiResponse res = null;
+		
+		Optional<User> op = userService.findByEmail(model.getEmail());
+		if(op.isPresent())
+		{
+			User user = op.get();
+Optional<Otp> otp = otpService.findByUser(user);
+			
+			if(otp.isPresent())
+			{
+				Otp ob =  otp.get();
+				
+				Boolean b = ob.getOtpNumber().matches(model.otp);
+				if(b)
+				{
+
+					res = new ApiResponse(true, "OTP is Correct !");
+				}
+				else
+				{
+					res= new ApiResponse(false, "OTP is incorrect !");
+				}
+			}
+		}
+		else
+			return new ApiResponse(false, "email not found !");
+		return res;
+		
+		
+	}
+	
+	@PostMapping("/changePass")
+	public ApiResponse changePass(@RequestBody OtpVerifyModel model)
+	{
+		ApiResponse res = null;
+		
+		try
+		{
+			 res = userService.updatePass(model,2);
+			 return new ApiResponse(true, "password changed");
+		}
+		catch (Exception ex)
+		{
+			return new ApiResponse(false, "error", ex.getMessage());
+		}
+		
 	}
 	
 }
