@@ -61,4 +61,38 @@ public class MailService
 			helper.setFrom("priyanshumandlik444@gmail.com");
 			mailSender.send(mimeMessage);
 	}
+	
+	
+	public void otpVerificationMail(String mail,String otp) throws Exception 
+	{
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+		
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+			
+			String htmlMsg = 
+					"<html>"
+	                + "<head>"
+	                + "<style>"
+	                + "body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; text-align: center; margin: 0; padding: 0; }"
+	                + "h1 { color: #d9534f; }"
+	                + "hr { border-color: #d9534f; margin-top: 20px; }"
+	                + "p { color: #333; margin: 20px 0; }"
+	                + "a { display: inline-block; padding: 10px 20px; background-color: #d9534f; color: #fff; text-decoration: none; border-radius: 5px; }"
+	                + "</style>"
+	                + "</head>"
+	                + "<body>"
+	                + "<h1>Welcome, User !</h1>"
+	                + "<hr>"
+	                + "<p>For reset password : </p>"
+	                +"<h1>Your Otp is "+otp+" </h1>"
+	                + "</body>"
+	                + "</html>";
+			
+			mimeMessage.setContent(htmlMsg, "text/html"); 
+			helper.setText(htmlMsg, true); 
+			helper.setTo(mail);
+			helper.setSubject("OTP Mail");
+			helper.setFrom("priyanshumandlik444@gmail.com");
+			mailSender.send(mimeMessage);
+	}
 }
