@@ -1,6 +1,8 @@
 package com.wheelyDeals.services;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,6 +52,11 @@ public class CustomerService
 			response = new ApiResponse(false, "Customer Save Failed !", ex.getMessage());
 		}		
 		return response;
+	}
+
+	public List<Customer> viewAll() {
+			return custRepo.findAll();
+			
 	}
 
 }

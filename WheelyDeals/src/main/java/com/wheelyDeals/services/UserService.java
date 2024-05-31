@@ -147,4 +147,20 @@ public class UserService implements UserDetailsService {
 		}
 		return response;	
 		}
+	
+		public User blockUser(Integer uId) {
+			User user = userRepo.getById(uId);
+
+			if (user.getIsblock() == true) {
+				user.setIsblock(false);
+				userRepo.save(user);
+				return user;
+
+			} else {
+				user.setIsblock(true);
+				userRepo.save(user);
+				return user;
+			}
+
+		}
 }
