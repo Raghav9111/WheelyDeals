@@ -15,9 +15,12 @@ public class OtpService {
 	@Autowired
 	private OtpRepo otpRepo;
 
-	public Optional<Otp> findByUser(User user) {
-		// TODO Auto-generated method stub
-		return otpRepo.findByUser(user);
+	public Otp findByUser(User user) {
+		Optional<Otp> obj = otpRepo.findByUser(user);
+		if(obj.isPresent())
+			return obj.get();
+		else
+			return null;
 	}
 
 	public void deleteOtp(Otp otp) {
