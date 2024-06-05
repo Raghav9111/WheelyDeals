@@ -1,13 +1,10 @@
 package com.wheelyDeals.controller;
 
-import java.util.Optional;
-
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,17 +23,17 @@ import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.UserService;
 import com.wheelyDeals.utils.ApiResponse;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RequestMapping("/web")
 @RestController
-public class WebController 
+public class WebController extends BaseController
 {
 	@Autowired
 	private AuthenticationManager authmanager;
@@ -58,24 +55,29 @@ public class WebController
 	
 	
 	@PostMapping("/saveCustomer")
-	public ApiResponse saveCust(@RequestBody CustomerRegistrationModel cusmodel)
+	public ResponseEntity<ApiResponse> saveCust(@Valid @RequestBody CustomerRegistrationModel cusmodel)
 	{
 		ApiResponse response= custService.saveCust(cusmodel);
-		return response;
+		if (response.getStatus())
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		else
+			return ResponseEntity.status(500).body(response);
+		
 	}
 	
 	@PostMapping("/saveServiceProvider")
-	public ApiResponse saveServProvider(@RequestBody ServiceProviderRegistrationModel model)
-	{
+	public ResponseEntity<ApiResponse> saveServProvider(@RequestBody ServiceProviderRegistrationModel model)
+	{	
 		ApiResponse response= providerService.saveProvider(model);
-		return response;
+		if (response.getStatus())
+			return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		else
+			return ResponseEntity.status(500).body(response);
 	}
 	
 	@PostMapping("/login")
-	public ApiResponse login(@RequestBody LoginModel model)
-	{
-
-		try {
+	public ResponseEntity<ApiResponse> login(@RequestBody LoginModel model)
+	{	try {
 			authmanager.authenticate(new UsernamePasswordAuthenticationToken(model.getEmail(),model.getPassword()));
 
 		User user =  (User) userService.loadUserByUsername(model.getEmail());
@@ -85,88 +87,93 @@ public class WebController
 				final String token = jwtToken.generateToken(user);
 				
 				LoginResponseModel lres = new LoginResponseModel(user.getEmail(), token, user.getRole());
-				
-				return new ApiResponse(true, "Login Success !", lres);
+
+				ApiResponse response = new ApiResponse(true, "Login Success !", lres);
+
+				return ResponseEntity.status(200).body(response);
 			}else 
 			{
-				return new ApiResponse(false, "Inactive Account , Please Activate it through Mail !");
+				ApiResponse response = new ApiResponse(false , "Login failed");
+
+				return ResponseEntity.status(200).body(response);
 			}
 		}catch(Exception ex) {
-			return new ApiResponse(false, "Login Failed !", null,ex.getMessage());
+			ApiResponse response = new ApiResponse(false , "Login failed");
+
+			return ResponseEntity.status(400).body(response);
 		}
 	}
 
 	@GetMapping("/verify/{mail}")
-	public ApiResponse verifyMail(@PathVariable(name = "mail") String email) 
+	public ResponseEntity<ApiResponse> verifyMail(@PathVariable(name = "mail") String email) 
 	{
-		Optional<User> op = userService.findByEmail(email);
-		if(op.isPresent()) 
-		{
-			User user = op.get();
-			user.setActiveStatus(true);
-			userService.update(user);
-			
-			return new ApiResponse(true, "Account Activated !");
-		}else {
-			return new ApiResponse(false, "Wrong Email !");
+		User user = userService.findByEmail(email);
+		ApiResponse response = userService.verifyEmail(user);
+		if(response.getStatus()) {
+			return ResponseEntity.status(200).body(response);
+		}
+		else {
+			return ResponseEntity.status(400).body(response);	
 		}
 	}
 	
 	@PatchMapping("/forget_pass")
-	public ApiResponse updatePassword(@RequestBody UpdatePasswordModel model )
+	public ResponseEntity<ApiResponse> updatePassword(@RequestBody UpdatePasswordModel model )
 	{
-		Optional<User> op = userService.findByEmail(model.getEmail());
-		if(op.isPresent())
-		{
-			User user = op.get();
-			ApiResponse res= userService.sendOtp(model.getEmail(),user);
-			 return new ApiResponse(true, "otp sent");
+		User user = userService.findByEmail(model.getEmail());
+		if(user != null) {
+			ApiResponse response= userService.sendOtp(model.getEmail(),user);
+			if (response.getStatus())
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+			else
+				return ResponseEntity.status(500).body(response);
 		}
-		else
-			return new ApiResponse(false, "email not found !");
+		else{
+			ApiResponse response=  new ApiResponse(false, "email not found !");
+			return ResponseEntity.status(500).body(response);
+
+		}
 	}
 	
 	@PostMapping("/verifyOtp")
-	public ApiResponse verifyOtp(@RequestBody OtpVerifyModel model)
+	public ResponseEntity<ApiResponse> verifyOtp(@RequestBody OtpVerifyModel model)
 	{
-		ApiResponse res = null;
 		
-		Optional<User> op = userService.findByEmail(model.getEmail());
-		if(op.isPresent())
-		{
-			User user = op.get();
-			Optional<Otp> otp = otpService.findByUser(user);	
-			if(otp.isPresent())
-			{
-				Otp ob =  otp.get();
-				Boolean b = ob.getOtpNumber().matches(model.otp);
-				if(b)
-				{
-					res = new ApiResponse(true, "OTP is Correct !");
+		User user = userService.findByEmail(model.getEmail());
+		if(user!=null){
+			Otp otp = otpService.findByUser(user);	
+			if(otp!=null){
+				Boolean b = otp.getOtpNumber().matches(model.otp);
+				if(b){
+					ApiResponse response  = new ApiResponse(true, "OTP is Correct !");
+					return ResponseEntity.status(200).body(response);
 				}
-				else
-				{
-					res= new ApiResponse(false, "OTP is incorrect !");
+				else{
+					ApiResponse response  = new ApiResponse(true, "OTP is Not Correct !");
+					return ResponseEntity.status(500).body(response);
 				}
 			}
+			else{
+				ApiResponse response  = new ApiResponse(true, "User not Present !");
+				return ResponseEntity.status(500).body(response);
+				}
+			}
+		else{
+			ApiResponse response  = new ApiResponse(true, "User not found !");
+			return ResponseEntity.status(500).body(response);	
 		}
-		else
-			return new ApiResponse(false, "email not found !");
-		return res;
 	}
 	
 	@PatchMapping("/changePass")
-	public ApiResponse changePass(@RequestBody OtpVerifyModel model)
+	public ResponseEntity<ApiResponse> changePass(@RequestBody OtpVerifyModel model)
 	{
 		ApiResponse res = null;
-		try
-		{
+		try{
 			 res = userService.updatePass(model,2);
-			 return new ApiResponse(true, "password changed");
+			 return ResponseEntity.status(200).body(res);
 		}
-		catch (Exception ex)
-		{
-			return new ApiResponse(false, "error", ex.getMessage());
+		catch (Exception ex){
+			return ResponseEntity.status(500).body(res);
 		}
 	}
 }
