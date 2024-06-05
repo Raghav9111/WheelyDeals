@@ -1,6 +1,7 @@
 package com.wheelyDeals.services;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -17,6 +18,7 @@ import com.wheelyDeals.entities.Otp;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.CustomerRegistrationModel;
 import com.wheelyDeals.model.OtpVerifyModel;
+import com.wheelyDeals.model.RegistrationDateModel;
 import com.wheelyDeals.model.UpdatePasswordModel;
 import com.wheelyDeals.repositories.OtpRepo;
 import com.wheelyDeals.repositories.UserRepo;
@@ -52,9 +54,15 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 	
-	public Optional<User> findByEmail(String email) 
+	public User findByEmail(String email) 
 	{
-		return userRepo.findByEmail(email);
+		Optional<User> obj = userRepo.findByEmail(email);
+		if(obj.isPresent()) {
+			return obj.get();
+		}
+		else {
+			return null;
+		}
 	}
 
 	public void update(User user) 
@@ -63,48 +71,53 @@ public class UserService implements UserDetailsService {
 	}
 
 	public ApiResponse updatePass(Object obj,int check) {
-		if(check ==1)
-		{
-			UpdatePasswordModel model = (UpdatePasswordModel)obj;
-			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			User user = (User)principal;			
-			if(!encoder.matches(model.getOldPass(),user.getPassword() )){
-				return new ApiResponse(false, "old password is not correct");
-			}
-			else{
-				if(!model.getNewPass().equals(model.getConfirmPass())){
-					return new ApiResponse(false, "new password and confirm password does not match") ;
+		try {
+			if(check ==1)
+			{
+				UpdatePasswordModel model = (UpdatePasswordModel)obj;
+				Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				User user = (User)principal;			
+				if(!encoder.matches(model.getOldPass(),user.getPassword() )){
+					return new ApiResponse(false, "old password is not correct");
 				}
 				else{
-					user.setPassword(encoder.encode(model.getNewPass()));
-					userRepo.save(user);
-					return new ApiResponse(true, "Password Changed");
-				}
-			}	
-		}
-		else
-		{
-			OtpVerifyModel model = (OtpVerifyModel)obj;
-			Optional<User> op = findByEmail(model.getEmail());
-			if(op.isPresent())
+					if(!model.getNewPass().equals(model.getConfirmPass())){
+						return new ApiResponse(false, "new password and confirm password does not match") ;
+					}
+					else{
+						user.setPassword(encoder.encode(model.getNewPass()));
+						userRepo.save(user);
+						return new ApiResponse(true, "Password Changed");
+					}
+				}	
+			}
+			else
 			{
-				User user = op.get();
-				if(model.newPass.matches(model.confirmPass))
+				OtpVerifyModel model = (OtpVerifyModel)obj;
+				User user = findByEmail(model.getEmail());
+				if(user != null)
 				{
-					user.setPassword(encoder.encode(model.confirmPass));
-					userRepo.save(user);
-					Otp otp = otpService.findByUser(user).get();
-					otpService.deleteOtp(otp);
-					return new ApiResponse(true, "password changed");
+					if(model.newPass.matches(model.confirmPass))
+					{
+						user.setPassword(encoder.encode(model.confirmPass));
+						userRepo.save(user);
+						Otp otp = otpService.findByUser(user);
+						otpService.deleteOtp(otp);
+						return new ApiResponse(true, "password changed");
+					}
+					else
+						return new ApiResponse(false, "Password not Matched");
 				}
-				else
-					return new ApiResponse(false, "Password not Matched");
+				else {
+					return new ApiResponse(false, "Can't get User");
+				}
 			}
-			else {
-				return new ApiResponse(false, "Can't get User");
-			}
+		}
+		catch (Exception e) {
+			return new ApiResponse(false, "Password change Exception", e.getMessage());
 		}
 	}
+		
 	
 	public ApiResponse sendOtp(String email, User user) {
 		ApiResponse response = null;
@@ -115,15 +128,11 @@ public class UserService implements UserDetailsService {
 			Random random = new Random();
 			
 			int number = 100000 + random.nextInt(900000);
-			String ot=String.valueOf(number);
-			System.out.println(ot);
+			String ot=String.valueOf(number);			
+			Otp otp = otpService.findByUser(user);
 			
-			Optional<Otp> op = otpService.findByUser(user);
-			
-			if(op.isPresent())
+			if(otp!=null)
 			{
-				 ob =  op.get();
-				System.out.println(ob);
 				ob.setOtpNumber(ot);
 				
 				otprepo.save(ob);
@@ -146,7 +155,7 @@ public class UserService implements UserDetailsService {
 			response = new ApiResponse(false, "otp was not sent !", ex.getMessage());
 		}
 		return response;	
-		}
+	}
 	
 		public User blockUser(Integer uId) {
 			User user = userRepo.getById(uId);
@@ -162,5 +171,31 @@ public class UserService implements UserDetailsService {
 				return user;
 			}
 
+		}
+
+		public ApiResponse getByDates(RegistrationDateModel model)
+		{
+			try {
+				List<User> user = userRepo.findUsersByRegDateBetween(model.getFromDate(), model.getToDate(),"ROLE_ADMIN");
+				if(user != null) {
+					return new ApiResponse(true,"Users List" , user);
+				}
+				else {
+					return new ApiResponse(false, "Can't find users");
+				}
+			}
+			catch (Exception e) {
+				return new ApiResponse(false, "Can't find users", e.getMessage());
+			}
+		}
+
+		public ApiResponse verifyEmail(User user) {
+			if(user != null) {
+				user.setActiveStatus(true);
+				update(user);
+				return new ApiResponse(true, "Account Activated !");
+			}else {
+				return new ApiResponse(false, "Account not active");
+			}
 		}
 }
