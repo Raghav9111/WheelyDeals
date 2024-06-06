@@ -6,8 +6,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table
 public class VehicleMaster {
 	@Id
@@ -26,7 +32,19 @@ public class VehicleMaster {
 	@Column()
 	private String vehicleCapacity;
 	
-	@Column(nullable = false)
+	@Column()
 	private String vehicleImage;
+
+	public VehicleMaster(String vehicleModel, String vehicleType, Integer seats, String vehicleCapacity,
+			String vehicleImage) {
+		super();
+		this.vehicleModel = vehicleModel;
+		this.vehicleType = vehicleType;
+		this.seats = seats;
+		this.vehicleCapacity = vehicleCapacity;
+		this.vehicleImage = vehicleImage;
+	}
+	
+	
 	
 }

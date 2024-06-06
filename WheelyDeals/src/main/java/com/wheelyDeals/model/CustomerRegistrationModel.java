@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CustomerRegistrationModel 
 {
-	@NotNull
-	@UniqueElements
+	
 	private String email;
 	
 	

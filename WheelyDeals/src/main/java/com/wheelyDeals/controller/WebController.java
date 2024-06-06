@@ -55,7 +55,7 @@ public class WebController extends BaseController
 	
 	
 	@PostMapping("/saveCustomer")
-	public ResponseEntity<ApiResponse> saveCust(@Valid @RequestBody CustomerRegistrationModel cusmodel)
+	public ResponseEntity<ApiResponse> saveCust(@RequestBody CustomerRegistrationModel cusmodel)
 	{
 		ApiResponse response= custService.saveCust(cusmodel);
 		if (response.getStatus())
