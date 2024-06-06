@@ -1,11 +1,11 @@
 package com.wheelyDeals.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.wheelyDeals.entities.Customer;
 import com.wheelyDeals.entities.ServiceProvider;
 import com.wheelyDeals.model.ServiceProviderRegistrationModel;
@@ -45,6 +45,11 @@ public class ServiceProviderService
 			response = new ApiResponse(false, "Service Provider Save Failed !", ex.getMessage());
 		}		
 		return response;
+	}
+
+	public List<ServiceProvider> viewAll() {
+		
+		return serviceRepo.findAll();
 	}
 }
 

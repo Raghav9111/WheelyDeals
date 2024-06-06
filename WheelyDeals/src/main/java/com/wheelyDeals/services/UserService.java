@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 
 import com.wheelyDeals.entities.Customer;
 import com.wheelyDeals.entities.Otp;
+import com.wheelyDeals.entities.ServiceProvider;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.CustomerRegistrationModel;
 import com.wheelyDeals.model.OtpVerifyModel;
 import com.wheelyDeals.model.RegistrationDateModel;
 import com.wheelyDeals.model.UpdatePasswordModel;
+import com.wheelyDeals.repositories.CustomerRepo;
 import com.wheelyDeals.repositories.OtpRepo;
+import com.wheelyDeals.repositories.ServiceProviderRepo;
 import com.wheelyDeals.repositories.UserRepo;
 import com.wheelyDeals.utils.ApiResponse;
 
@@ -30,6 +33,12 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	private ServiceProviderRepo spRepo;
+	
+	@Autowired
+	private CustomerRepo crepo;
 	
 	@Autowired
 	private PasswordEncoder encoder;
@@ -197,5 +206,35 @@ public class UserService implements UserDetailsService {
 			}else {
 				return new ApiResponse(false, "Account not active");
 			}
+		}
+
+		public ApiResponse getByStatus(Boolean status, String role) 
+		{
+				if(role.equals("customer")) 
+				{
+					Optional<List<Customer>> obj = crepo.findByRoleAndIsblock("ROLE_CUSTOMER", status);
+					if(obj.isPresent())
+					{
+						List<Customer> clist = obj.get();
+						return new ApiResponse(true, "Active customer list", clist);
+					}
+					else
+					{
+						return new ApiResponse(false, "Active customer list failed");
+					}
+				}
+				else
+				{
+					Optional<List<ServiceProvider>> obj = spRepo.findByRoleAndIsblock("ROLE_SERVICEPROVIDER", status);
+					if(obj.isPresent())
+					{
+						List<ServiceProvider> splist = obj.get();
+						return new ApiResponse(true, "Active service provider list", splist);
+					}
+					else
+					{
+						return new ApiResponse(false, "Active service provider list failed");
+					}
+				}
 		}
 }
