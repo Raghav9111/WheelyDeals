@@ -21,8 +21,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ServiceProviderVehicle {
 	@Id
+	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer serivceProviderVehicle;
+	private Integer spVehicleId;;
 	
 	@ManyToOne
 	@JoinColumn(name="service_provider")
@@ -43,6 +44,17 @@ public class ServiceProviderVehicle {
 	
 	@Column(nullable = false)
 	private String status;
+
+	public ServiceProviderVehicle(ServiceProvider serviceProvider, VehicleMaster vehicleMaster,
+			String registrationNumber, String rcCard, String fuelType, String status) {
+		super();
+		this.serviceProvider = serviceProvider;
+		this.vehicleMaster = vehicleMaster;
+		this.registrationNumber = registrationNumber;
+		this.rcCard = rcCard;
+		this.fuelType = fuelType;
+		this.status = status;
+	}
 	
 	
 }

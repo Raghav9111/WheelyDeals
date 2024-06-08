@@ -123,14 +123,14 @@ public class AdminController extends BaseController {
 	}
 	
 	@PostMapping("/addMasterVehicle")
-	public ResponseEntity<ApiResponse> addMasterVehicle(@RequestBody AddVehicleMasterModel model,@RequestParam("image") MultipartFile file) throws IOException 
+	public ResponseEntity<ApiResponse> addMasterVehicle(AddVehicleMasterModel model,MultipartFile file) throws IOException 
 	{	
 		byte arr[] = file.getBytes();
 		
 		String fileName = file.getOriginalFilename();		
 		String extension = fileName.substring(fileName.lastIndexOf("."));
 		String uploadFile =  UUID.randomUUID().toString()+extension;	
-		File fileObj = new File("C:\\Users\\Hp\\git\\WheelyDeals\\WheelyDeals\\src\\main\\resources\\static\\images", uploadFile);
+		File fileObj = new File("E:\\WheelyDeals\\VehicleMasterImages", uploadFile);
 		FileOutputStream fos = new FileOutputStream(fileObj);
 		fos.write(arr);
 		fos.flush();

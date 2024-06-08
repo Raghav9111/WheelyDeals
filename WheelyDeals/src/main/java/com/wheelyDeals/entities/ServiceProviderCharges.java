@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ServiceProviderCharges {
 	@Id
+	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer chargesId;
 	
@@ -28,7 +29,7 @@ public class ServiceProviderCharges {
 	
 	@ManyToOne
 	@JoinColumn(name="vehicle_master", nullable = false)
-	private ServiceProvider vehicleMaster;
+	private VehicleMaster vehicleMaster;
 	
 	@Column(nullable = false)
 	private Integer minPerDayKm;
@@ -37,7 +38,7 @@ public class ServiceProviderCharges {
 	private Float petrolRatePerKm;
 	
 	@Column
-	private Float diselRatePerKm;
+	private Float dieselRatePerKm;
 	
 	@Column
 	private Float cngRatePerKm;
@@ -47,5 +48,20 @@ public class ServiceProviderCharges {
 	
 	@Column
 	private Float acRatePerKm;
+
+	public ServiceProviderCharges(ServiceProvider serviceProvider, VehicleMaster vehicleMaster, Integer minPerDayKm,
+			Float petrolRatePerKm, Float dieselRatePerKm, Float cngRatePerKm, Float evRatePerKm, Float acRatePerKm) {
+		super();
+		this.serviceProvider = serviceProvider;
+		this.vehicleMaster = vehicleMaster;
+		this.minPerDayKm = minPerDayKm;
+		this.petrolRatePerKm = petrolRatePerKm;
+		this.dieselRatePerKm = dieselRatePerKm;
+		this.cngRatePerKm = cngRatePerKm;
+		this.evRatePerKm = evRatePerKm;
+		this.acRatePerKm = acRatePerKm;
+	}
+	
+	
 	
 }
