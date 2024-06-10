@@ -98,4 +98,23 @@ public class SPVehicleService {
 	}
 
 
+	public ApiResponse deleteVehicle(Integer vid) {
+		try {
+			Optional<ServiceProviderVehicle> obj = spVehicleRepo.findById(vid);
+			if(obj.isPresent()) {
+				ServiceProviderVehicle spVehicle = obj.get();
+				spVehicle.setStatus("Deleted");
+				spVehicleRepo.save(spVehicle);
+				return new ApiResponse(true, "Vehicle Deleted Successfully");
+			}
+			else {
+				return new ApiResponse(false, "Vehicle not found");
+			}
+		}
+		catch (Exception e) {
+			return new ApiResponse(false, "Vehicle Delete Failed", e.getMessage());
+		}
+	}
+
+
 }

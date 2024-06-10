@@ -17,4 +17,17 @@ public class AddVehicleChargesModel {
 	private Float evRatePerKm;
 	private Float acRatePerKm;
 	
+	public AddVehicleChargesModel(Integer minPerDayKm, Float petrolRatePerKm, Float dieselRatePerKm, Float cngRatePerKm,
+			Float evRatePerKm, Float acRatePerKm) {
+		super();
+		this.minPerDayKm = minPerDayKm;
+		this.petrolRatePerKm = petrolRatePerKm;
+		this.dieselRatePerKm = dieselRatePerKm;
+		this.cngRatePerKm = cngRatePerKm;
+		this.evRatePerKm = evRatePerKm;
+		this.acRatePerKm = acRatePerKm;
+	}
+	
+	
+	
 }
