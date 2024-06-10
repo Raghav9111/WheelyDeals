@@ -1,5 +1,7 @@
 package com.wheelyDeals.entities;
 
+import com.wheelyDeals.model.AddVehicleChargesModel;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,7 +63,14 @@ public class ServiceProviderCharges {
 		this.evRatePerKm = evRatePerKm;
 		this.acRatePerKm = acRatePerKm;
 	}
-	
-	
-	
+
+	public void updateCharges(AddVehicleChargesModel model) {
+		this.minPerDayKm = model.getMinPerDayKm();
+		this.petrolRatePerKm = model.getPetrolRatePerKm();
+		this.dieselRatePerKm = model.getDieselRatePerKm();
+		this.cngRatePerKm = model.getCngRatePerKm();
+		this.evRatePerKm = model.getEvRatePerKm();
+		this.acRatePerKm = model.getAcRatePerKm();
+	}
+
 }

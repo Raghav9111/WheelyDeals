@@ -26,9 +26,17 @@ public class VehicleImages {
 	private Integer vehicleImageId;
 	
 	@Column
-	private List<String> images;
+	private String image;
 	
 	@ManyToOne
 	@JoinColumn(name="service_provider_vehicle")
 	private ServiceProviderVehicle serviceProviderVehicle;
+
+	public VehicleImages(String image, ServiceProviderVehicle serviceProviderVehicle) {
+		super();
+		this.image = image;
+		this.serviceProviderVehicle = serviceProviderVehicle;
+	}
+	
+	
 }

@@ -23,7 +23,7 @@ public class ServiceProviderVehicle {
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer spVehicleId;;
+	private Integer spVehicleId;
 	
 	@ManyToOne
 	@JoinColumn(name="service_provider")

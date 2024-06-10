@@ -51,4 +51,21 @@ public class ServiceProviderChargesService {
 		}
 	}
 
+	public ApiResponse updateCharges(Integer chargesId, AddVehicleChargesModel model) {
+		try {
+			Optional<ServiceProviderCharges> obj = spvChargesRepo.findById(chargesId);
+			if(obj.isPresent()) {
+				ServiceProviderCharges spvCharges = obj.get();
+				spvCharges.updateCharges(model);
+				spvChargesRepo.save(spvCharges);
+				return new ApiResponse(true, "Charges Update Successfully", spvCharges);
+			}
+			else {
+				return new ApiResponse(false, "Master Vehicle charges not found");
+			}
+		}catch (Exception e) {
+			return new ApiResponse(false, "Charges Update Failed", e.getMessage());
+		}
+	}
+
 }
