@@ -4,6 +4,7 @@ package com.wheelyDeals.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.wheelyDeals.utils.ApiResponse;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController extends BaseController
 {
 	@Autowired
