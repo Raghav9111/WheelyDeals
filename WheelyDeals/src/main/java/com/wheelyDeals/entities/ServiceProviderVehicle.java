@@ -2,6 +2,8 @@ package com.wheelyDeals.entities;
 
 import java.util.Date;
 
+import com.wheelyDeals.model.AddSPVehicleModel;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,6 +56,44 @@ public class ServiceProviderVehicle {
 		this.rcCard = rcCard;
 		this.fuelType = fuelType;
 		this.status = status;
+	}
+
+	public Boolean checkFuelStatus(ServiceProviderCharges spc, AddSPVehicleModel model) {
+		switch(model.getFuelType()) {
+			case "Petrol":
+				if(spc.getPetrolRatePerKm() == null || spc.getPetrolRatePerKm() == 0) {
+					System.err.println("nhi aaya");
+					return false;
+				}
+				else {
+					System.out.println("aaya");
+				    return true;
+				}
+			case "Diesel":
+				if(spc.getDieselRatePerKm() == null || spc.getDieselRatePerKm() == 0) {
+					return false;
+				}
+				else {
+					return true;
+				}
+			case "CNG":
+				if(spc.getCngRatePerKm() == null || spc.getCngRatePerKm() == 0) {
+					return false;
+				}
+				else {
+				    return true;
+				}
+			case "EV":
+				if(spc.getEvRatePerKm() == null || spc.getEvRatePerKm() == 0) {
+					return false;
+				}
+				else {
+					return true;
+				}
+			default:
+				System.err.println("yha aaya");
+				return false;
+		}
 	}
 	
 	

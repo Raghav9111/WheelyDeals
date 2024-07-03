@@ -26,17 +26,29 @@ public class VehicleImages {
 	private Integer vehicleImageId;
 	
 	@Column
-	private String image;
+	private String image1;
+	@Column
+	private String image2;
+	@Column
+	private String image3;
+	@Column
+	private String image4;
 	
 	@ManyToOne
 	@JoinColumn(name="service_provider_vehicle")
 	private ServiceProviderVehicle serviceProviderVehicle;
 
-	public VehicleImages(String image, ServiceProviderVehicle serviceProviderVehicle) {
+	public VehicleImages(String image1, String image2, String image3, String image4,
+			ServiceProviderVehicle serviceProviderVehicle) {
 		super();
-		this.image = image;
+		this.image1 = image1;
+		this.image2 = image2;
+		this.image3 = image3;
+		this.image4 = image4;
 		this.serviceProviderVehicle = serviceProviderVehicle;
 	}
+
+	
 	
 	
 }

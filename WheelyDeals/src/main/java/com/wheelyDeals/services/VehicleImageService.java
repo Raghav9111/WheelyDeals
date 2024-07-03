@@ -28,6 +28,7 @@ public class VehicleImageService {
 	public ApiResponse uploadImages(Integer vid, ArrayList<MultipartFile> files) throws IOException {
 		try {
 			Optional<ServiceProviderVehicle> obj = spvRepo.findById(vid);
+			ArrayList<String> filePath =  new ArrayList<>();
 			if(obj.isPresent()) {
 				ServiceProviderVehicle spv = obj.get();
 				for(MultipartFile mpf : files) {
@@ -41,11 +42,17 @@ public class VehicleImageService {
 					fos.write(arr);
 					fos.flush();
 					fos.close();		
-					String filePath =  fileObj.getAbsolutePath();
-					VehicleImages vImg = new VehicleImages(filePath, spv);
-					viRepo.save(vImg);
+					
+					filePath.add(fileObj.getAbsolutePath());					
 				}
-				return new ApiResponse(true, "Vehicle Images Saved Successfully");
+				if(filePath.isEmpty()) {
+					return new ApiResponse(false, "Images not found");
+				}
+				else {
+					VehicleImages vImg = new VehicleImages(filePath.get(0), filePath.get(1), filePath.get(2), filePath.get(3), spv);
+					viRepo.save(vImg);
+					return new ApiResponse(true, "Vehicle Images Saved Successfully");
+				}
 			}
 			else {
 				return new ApiResponse(false, "Service Provider Vehicle not found");
