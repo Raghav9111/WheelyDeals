@@ -2,11 +2,13 @@ package com.wheelyDeals.services;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,12 +18,14 @@ import com.wheelyDeals.entities.ServiceProviderVehicle;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.entities.VehicleMaster;
 import com.wheelyDeals.model.AddSPVehicleModel;
+import com.wheelyDeals.repositories.SPVehicleChargesRepo;
 import com.wheelyDeals.repositories.SPVehicleRepo;
 import com.wheelyDeals.repositories.ServiceProviderRepo;
 import com.wheelyDeals.repositories.VehicleMasterRepo;
 import com.wheelyDeals.utils.ApiResponse;
 
 @Service
+
 public class SPVehicleService {
 	
 	@Autowired
@@ -32,6 +36,9 @@ public class SPVehicleService {
 	
 	@Autowired
 	private SPVehicleRepo spVehicleRepo;
+	
+	@Autowired
+	private SPVehicleChargesRepo spVehicleChargesRepo;
 
 	
 	public ApiResponse addVehicle(AddSPVehicleModel model,User user,MultipartFile file) {
@@ -52,15 +59,31 @@ public class SPVehicleService {
 			Optional<ServiceProvider> spobj= serviceProviderRepo.findById(user.getUserId());
 			Optional<VehicleMaster> vmobj = vmRepo.findById(model.getVehicleMasterId());
 			if(spobj.isPresent() && vmobj.isPresent()) {
-				
 				ServiceProvider serviceProvider = spobj.get();
 				VehicleMaster vehicleMaster = vmobj.get();
-				
-				ServiceProviderVehicle spVehicle = new ServiceProviderVehicle(serviceProvider, vehicleMaster, model.getRegistrationNumber(), 
-						model.getRcCard(), model.getFuelType(), "Not Available");
-				
-				spVehicle = spVehicleRepo.save(spVehicle);
-				return new ApiResponse(true, "Vehicle Saved successfully");	
+				Optional<ServiceProviderCharges> spcobj = spVehicleChargesRepo.findByVehicleMasterAndServiceProvider(vehicleMaster,serviceProvider);
+				System.err.println("hjhjjgjgjgjjg");
+				if(spcobj.isPresent()) {
+					ServiceProviderCharges spc = spcobj.get();
+					ServiceProviderVehicle spVehicle = new ServiceProviderVehicle();
+					
+					Boolean fuelStatus = spVehicle.checkFuelStatus(spc,model);
+					System.err.println(fuelStatus);
+					if(fuelStatus == true) {
+						spVehicle = new ServiceProviderVehicle(serviceProvider, vehicleMaster, model.getRegistrationNumber(), 
+								model.getRcCard(), model.getFuelType(), "Not Available");
+						
+						spVehicle = spVehicleRepo.save(spVehicle);
+						return new ApiResponse(true, "Vehicle Saved successfully",spVehicle);
+					}
+					else {
+						return new ApiResponse(false, "Charges Not Defined");
+					}
+				}
+				else {
+					return new ApiResponse(false, "Charges Not Defined");
+				}
+					
 			}
 			else {
 				return new ApiResponse(false, "Service Provider or Vehicle master not available");	
@@ -72,7 +95,7 @@ public class SPVehicleService {
 	}
 
 
-	public ApiResponse viewAll(User user) 
+	public ApiResponse viewAll(User user, int page, int size) 
 	{
 		try
 		{
@@ -80,9 +103,15 @@ public class SPVehicleService {
 			if(spobj.isPresent())
 			{
 				ServiceProvider sp = spobj.get();
-				Optional<List<ServiceProviderVehicle>> list = spVehicleRepo.findByStatusAndServiceProvider("Deleted", sp );
+				Optional<List<ServiceProviderVehicle>> list = spVehicleRepo.findByStatusAndServiceProvider("Deleted", sp,PageRequest.of(page-1,size) );
+				Long count = spVehicleRepo.countByStatus("Deleted").get();
+				
+				HashMap<String, Object> hm = new HashMap<>();
+				hm.put("list", list.get());
+				hm.put("count", count);
+				
 				if(list.isPresent())
-					return new ApiResponse(true, "Vehicle list", list.get());
+					return new ApiResponse(true, "Vehicle list", hm);
 				
 				else
 					return new ApiResponse(false, "Vehicle list not present");	
@@ -115,6 +144,4 @@ public class SPVehicleService {
 			return new ApiResponse(false, "Vehicle Delete Failed", e.getMessage());
 		}
 	}
-
-
 }

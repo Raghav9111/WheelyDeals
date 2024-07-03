@@ -27,6 +27,11 @@ public class AddVehicleChargesModel {
 		this.evRatePerKm = evRatePerKm;
 		this.acRatePerKm = acRatePerKm;
 	}
+
+	public AddVehicleChargesModel(Integer vehicleMasterId) {
+		super();
+		this.vehicleMasterId = vehicleMasterId;
+	}
 	
 	
 	

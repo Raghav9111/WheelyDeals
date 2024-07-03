@@ -19,6 +19,11 @@ public class OtpVerifyModel {
 		this.newPass = newPass;
 		this.confirmPass = confirmPass;
 	}
+	public OtpVerifyModel(String email, String otp) {
+		super();
+		this.email = email;
+		this.otp = otp;
+	}
 	
 
 }

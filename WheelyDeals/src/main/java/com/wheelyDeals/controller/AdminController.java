@@ -94,7 +94,7 @@ public class AdminController extends BaseController {
 		}
 	}
 	
-	@GetMapping("/blockUser/{uId}")
+	@PatchMapping("/blockUser/{uId}")
 	public ResponseEntity<ApiResponse> blockUser(@PathVariable("uId") Integer uId) {
 		ApiResponse response;
 		try {
@@ -145,20 +145,6 @@ public class AdminController extends BaseController {
 		else
 			return ResponseEntity.status(500).body(response);
 
-	}
-	
-	@GetMapping("/allVehicles")
-	public ResponseEntity<ApiResponse> viewAllVehicles() 
-	{
-		ApiResponse response;
-		try {
-			List<VehicleMaster> vehicleList = vmService.viewAll();
-			response = new ApiResponse(true, "Vehicle List", vehicleList);
-			return ResponseEntity.status(200).body(response);
-		}catch (Exception e) {
-			response = new ApiResponse(false, "Customer List Failed");
-			return ResponseEntity.status(500).body(response);
-		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.wheelyDeals.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,12 +48,14 @@ public class ServiceProviderController extends BaseController
 	public ResponseEntity<ApiResponse> addCharges(@RequestBody AddVehicleChargesModel model) {
 		Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = (User)obj;
+		System.out.println(model);
+		System.out.println(user);
 		ApiResponse response = chargesService.addVehicleCharges(model, user);
 		if(response.getStatus()) {
 			return ResponseEntity.status(200).body(response);
 		}
 		else {
-			return ResponseEntity.status(500).body(response);
+			return ResponseEntity.status(200).body(response);
 		}
 	}
 	
@@ -65,17 +68,18 @@ public class ServiceProviderController extends BaseController
 			return ResponseEntity.status(200).body(response);
 		}
 		else {
-			return ResponseEntity.status(500).body(response);
+			return ResponseEntity.status(200).body(response);
 		}
 	}
 	
 	@GetMapping("/viewVehicles")
-	public ResponseEntity<ApiResponse> viewVehicles() {
+	public ResponseEntity<ApiResponse> viewVehicles(@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size) {
 		ApiResponse response;
 		Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = (User)obj;
 		try {
-			response = spVehicleService.viewAll(user);
+			response = spVehicleService.viewAll(user,page,size);
 			return ResponseEntity.status(200).body(response);
 		}catch (Exception e) {
 			response = new ApiResponse(false, "Vehicles List Failed");
@@ -112,9 +116,19 @@ public class ServiceProviderController extends BaseController
 			return ResponseEntity.status(200).body(response);
 		}
 		else {
-			return ResponseEntity.status(500).body(response);
+			return ResponseEntity.status(200).body(response);
 		}
 	}
- 	
+	@GetMapping("/viewCharges/{vmid}")
+	public ResponseEntity<ApiResponse> viewCharges(@PathVariable(name="vmid") Integer vmId) {
+		Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		ApiResponse response = chargesService.viewVehicleCharges(obj,vmId);
+		if(response.getStatus()) {
+			return ResponseEntity.status(200).body(response);
+		}
+		else {
+			return ResponseEntity.status(200).body(response);
+		}
+	}
 	
 }

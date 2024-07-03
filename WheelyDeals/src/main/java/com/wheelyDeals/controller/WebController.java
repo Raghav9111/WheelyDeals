@@ -1,29 +1,35 @@
 package com.wheelyDeals.controller;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wheelyDeals.config.JwtTokenUtil;
 import com.wheelyDeals.entities.Otp;
 import com.wheelyDeals.entities.User;
+import com.wheelyDeals.entities.VehicleMaster;
 import com.wheelyDeals.model.CustomerRegistrationModel;
 import com.wheelyDeals.model.OtpVerifyModel;
 import com.wheelyDeals.model.LoginModel;
 import com.wheelyDeals.model.LoginResponseModel;
 import com.wheelyDeals.model.ServiceProviderRegistrationModel;
 import com.wheelyDeals.model.UpdatePasswordModel;
+import com.wheelyDeals.repositories.VehicleMasterRepo;
 import com.wheelyDeals.services.CustomerService;
 import com.wheelyDeals.services.OtpService;
 import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.UserService;
+import com.wheelyDeals.services.VehicleMasterService;
 import com.wheelyDeals.utils.ApiResponse;
-
-import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +60,12 @@ public class WebController extends BaseController
 	
 	@Autowired
 	private JwtTokenUtil jwtToken;
+	
+	@Autowired
+	private VehicleMasterService vmService;
+	
+	@Autowired
+	private VehicleMasterRepo vmRepo;
 	
 	
 	@PostMapping("/saveCustomer")
@@ -176,6 +188,27 @@ public class WebController extends BaseController
 		}
 		catch (Exception ex){
 			return ResponseEntity.status(500).body(res);
+		}
+	}
+	
+	@GetMapping("/allVehicles")
+	public ResponseEntity<ApiResponse> viewAllVehicles(@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "2") int size) 
+	{
+		ApiResponse response;
+		try {
+			Page<VehicleMaster> vehicleList = vmService.viewAll(page,size);
+			Long count = vmRepo.count();
+			
+			HashMap<String, Object> hm = new HashMap<>();
+			hm.put("list", vehicleList);
+			hm.put("count", count);
+			
+			response = new ApiResponse(true, "Vehicle List", hm);
+			return ResponseEntity.status(200).body(response);
+		}catch (Exception e) {
+			response = new ApiResponse(false, "Customer List Failed");
+			return ResponseEntity.status(500).body(response);
 		}
 	}
 }

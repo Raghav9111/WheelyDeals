@@ -1,5 +1,6 @@
 package com.wheelyDeals.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,9 @@ public class ServiceProviderChargesService {
 	public ApiResponse addVehicleCharges(AddVehicleChargesModel model,User user) {
 		try {
 			Optional<ServiceProvider> spobj= serviceProviderRepo.findById(user.getUserId());
+			System.out.println(spobj.get());
 			Optional<VehicleMaster> vmobj = vmRepo.findById(model.getVehicleMasterId());
+			System.out.println(vmobj.get());
 			if(spobj.isPresent() && vmobj.isPresent()) {
 				
 				ServiceProvider serviceProvider = spobj.get();
@@ -65,6 +68,31 @@ public class ServiceProviderChargesService {
 			}
 		}catch (Exception e) {
 			return new ApiResponse(false, "Charges Update Failed", e.getMessage());
+		}
+	}
+
+	public ApiResponse viewVehicleCharges(Object obj, Integer vehicleMasterId) {
+		try {
+			User user = (User)obj;
+			Optional<ServiceProvider> ob = serviceProviderRepo.findById(user.getUserId());
+			Optional<VehicleMaster> vmobj = vmRepo.findById(vehicleMasterId);
+			if(ob.isPresent() && vmobj.isPresent()) {
+				ServiceProvider sp = ob.get();
+				VehicleMaster vm = vmobj.get();
+				Optional<ServiceProviderCharges> spCharges = spvChargesRepo.findByVehicleMasterAndServiceProvider(vm, sp);
+				if(spCharges.isPresent()) {
+					return new ApiResponse(true, vm.getVehicleModel()+" Charges",spCharges.get());
+				}
+				else {
+					return new ApiResponse(false, "Charges not present");
+				}
+			}
+			else {
+				return new ApiResponse(false, "Vehicle Master or Service Provider not found");
+			}
+		}
+		catch (Exception e) {
+			return new ApiResponse(false, "View Charges Failed", e.getMessage());
 		}
 	}
 

@@ -26,7 +26,7 @@ public class VehicleMaster {
 	@Column(nullable = false)
 	private String vehicleType;
 	
-	@Column()
+	@Column(nullable = true)
 	private Integer seats;
 	
 	@Column()

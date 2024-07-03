@@ -142,8 +142,7 @@ public class UserService implements UserDetailsService {
 			
 			if(otp!=null)
 			{
-				ob.setOtpNumber(ot);
-				
+				otp.setOtpNumber(ot);
 				otprepo.save(ob);
 				status = true;
 			
