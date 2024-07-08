@@ -192,19 +192,13 @@ public class WebController extends BaseController
 	}
 	
 	@GetMapping("/allVehicles")
-	public ResponseEntity<ApiResponse> viewAllVehicles(@RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "2") int size) 
+	public ResponseEntity<ApiResponse> viewAllVehicles() 
 	{
 		ApiResponse response;
 		try {
-			Page<VehicleMaster> vehicleList = vmService.viewAll(page,size);
+			List<VehicleMaster> vehicleList = vmService.viewAll();
 			Long count = vmRepo.count();
-			
-			HashMap<String, Object> hm = new HashMap<>();
-			hm.put("list", vehicleList);
-			hm.put("count", count);
-			
-			response = new ApiResponse(true, "Vehicle List", hm);
+			response = new ApiResponse(true, "Vehicle List", vehicleList);
 			return ResponseEntity.status(200).body(response);
 		}catch (Exception e) {
 			response = new ApiResponse(false, "Customer List Failed");

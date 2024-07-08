@@ -41,8 +41,8 @@ public class VehicleMasterService
 	}
 
 
-	public Page<VehicleMaster> viewAll(int page, int size) {
-		return vmRepo.findAll(PageRequest.of(page-1,size));
+	public List<VehicleMaster> viewAll() {
+		return vmRepo.findAll();
 	}
 
 }
