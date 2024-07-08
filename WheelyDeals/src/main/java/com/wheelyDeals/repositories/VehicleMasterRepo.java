@@ -12,5 +12,5 @@ import com.wheelyDeals.entities.VehicleMaster;
 
 public interface VehicleMasterRepo extends JpaRepository<VehicleMaster, Integer>
 {
-	Page<VehicleMaster> findAll(Pageable pageable);
+	
 }
