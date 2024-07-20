@@ -27,6 +27,7 @@ import com.wheelyDeals.entities.VehicleMaster;
 import com.wheelyDeals.model.AddVehicleMasterModel;
 import com.wheelyDeals.model.RegistrationDateModel;
 import com.wheelyDeals.services.CustomerService;
+import com.wheelyDeals.services.SPVehicleService;
 import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.UserService;
 import com.wheelyDeals.services.VehicleMasterService;
@@ -55,6 +56,9 @@ public class AdminController extends BaseController {
 	
 	@Autowired
 	private ServiceProviderService spService;
+	
+	@Autowired
+	private SPVehicleService spVehicleService;
 	
 	@GetMapping("/viewAllCustomer")
 	public ResponseEntity<ApiResponse> viewAllCustomer() {
@@ -146,5 +150,17 @@ public class AdminController extends BaseController {
 			return ResponseEntity.status(500).body(response);
 
 	}
+	
+	@GetMapping("/spVehiclesByMastervehicle")
+	public ResponseEntity<ApiResponse> spVehiclesByMastervehicle(VehicleMaster vm) {
+		ApiResponse response = spVehicleService.getByMastervehicle(vm);
+		if(response.getStatus()) {
+			return ResponseEntity.status(200).body(response);
+		}
+		else {
+			return ResponseEntity.status(500).body(response);
+		}
+	}
+	
 	
 }

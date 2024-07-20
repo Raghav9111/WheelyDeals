@@ -144,4 +144,15 @@ public class SPVehicleService {
 			return new ApiResponse(false, "Vehicle Delete Failed", e.getMessage());
 		}
 	}
+
+
+	public ApiResponse getByMastervehicle(VehicleMaster vm) {
+		try
+		{
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
 }
