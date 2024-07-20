@@ -15,7 +15,7 @@ public class AddVehicleMasterModel
 	
 	private Integer seats;
 	
-	private String vehicleCapacity;
+	private Integer vehicleCapacity;
 	
 	private String vehicleImage;
 

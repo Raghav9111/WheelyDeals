@@ -30,12 +30,12 @@ public class VehicleMaster {
 	private Integer seats;
 	
 	@Column()
-	private String vehicleCapacity;
+	private Integer vehicleCapacity;
 	
 	@Column()
 	private String vehicleImage;
 
-	public VehicleMaster(String vehicleModel, String vehicleType, Integer seats, String vehicleCapacity,
+	public VehicleMaster(String vehicleModel, String vehicleType, Integer seats, Integer vehicleCapacity,
 			String vehicleImage) {
 		super();
 		this.vehicleModel = vehicleModel;
