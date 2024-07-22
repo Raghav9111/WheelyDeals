@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.wheelyDeals.entities.ServiceProvider;
 import com.wheelyDeals.entities.ServiceProviderVehicle;
+import com.wheelyDeals.entities.VehicleMaster;
 
 public interface SPVehicleRepo extends JpaRepository<ServiceProviderVehicle, Integer>
 {
@@ -17,5 +18,7 @@ public interface SPVehicleRepo extends JpaRepository<ServiceProviderVehicle, Int
 	
 	@Query("select COUNT(v) from ServiceProviderVehicle v where status !=?1")
     Optional<Long> countByStatus(String status);
+	
+	Optional<List<ServiceProviderVehicle>> findByVehicleMaster(VehicleMaster vm);
 
 }
