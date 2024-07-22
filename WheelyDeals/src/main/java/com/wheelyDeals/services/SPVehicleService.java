@@ -146,13 +146,22 @@ public class SPVehicleService {
 	}
 
 
-	public ApiResponse getByMastervehicle(VehicleMaster vm) {
+	public ApiResponse getByMastervehicle(Integer vm) {
 		try
 		{
-			
-		}catch (Exception e) {
-			// TODO: handle exception
+			 Optional<VehicleMaster> obj = vmRepo.findById(vm);
+			 
+			Optional<List<ServiceProviderVehicle>> vmList = spVehicleRepo.findByVehicleMaster(obj.get());
+			if(vmList.isPresent())
+			{
+				return new ApiResponse(true, "Vehicle list", vmList.get());
+			}
+			else
+				return new ApiResponse(false, "Vehicle list not present");	
 		}
-		return null;
+		catch (Exception e) 
+		{
+			return new ApiResponse(false, "Vehicle list failed", e.getMessage());		
+		}
 	}
 }

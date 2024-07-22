@@ -151,9 +151,9 @@ public class AdminController extends BaseController {
 
 	}
 	
-	@GetMapping("/spVehiclesByMastervehicle")
-	public ResponseEntity<ApiResponse> spVehiclesByMastervehicle(VehicleMaster vm) {
-		ApiResponse response = spVehicleService.getByMastervehicle(vm);
+	@GetMapping("/spVehiclesByMastervehicle/{mvId}")
+	public ResponseEntity<ApiResponse> spVehiclesByMastervehicle(@PathVariable("mvId") Integer mvId) {
+		ApiResponse response = spVehicleService.getByMastervehicle(mvId);
 		if(response.getStatus()) {
 			return ResponseEntity.status(200).body(response);
 		}
