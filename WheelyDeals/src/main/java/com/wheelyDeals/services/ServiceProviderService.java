@@ -1,15 +1,22 @@
 package com.wheelyDeals.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.wheelyDeals.entities.Customer;
 import com.wheelyDeals.entities.ServiceProvider;
+import com.wheelyDeals.entities.ServiceProviderVehicle;
+import com.wheelyDeals.entities.User;
+import com.wheelyDeals.entities.VehicleRequest;
 import com.wheelyDeals.model.ServiceProviderRegistrationModel;
+import com.wheelyDeals.repositories.SPVehicleRepo;
 import com.wheelyDeals.repositories.ServiceProviderRepo;
+import com.wheelyDeals.repositories.VehicleRequestRepo;
 import com.wheelyDeals.utils.ApiResponse;
 
 @Service
@@ -23,6 +30,12 @@ public class ServiceProviderService
 	
 	@Autowired
 	private ServiceProviderRepo serviceRepo;
+	
+	@Autowired
+	private VehicleRequestRepo vreqRepo;
+	
+	@Autowired
+	private SPVehicleRepo spVehicleRepo;
 
 	public ApiResponse saveProvider(ServiceProviderRegistrationModel model) 
 	{
@@ -51,5 +64,64 @@ public class ServiceProviderService
 		
 		return serviceRepo.findAll();
 	}
+
+	public ApiResponse viewRequest() 
+	{
+		ApiResponse response = null;
+		try 
+		{
+			List<VehicleRequest> spreqList = new ArrayList<>();
+		
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = (User) principal;
+			
+			System.out.println(user);
+			Optional<ServiceProvider> op = serviceRepo.findById(user.getUserId());
+			if(op.isPresent())
+			{
+				ServiceProvider sp = op.get();
+				List<VehicleRequest> vreqList =  vreqRepo.findAll();
+				
+				for(VehicleRequest list : vreqList)
+				{
+					
+					Optional<List<ServiceProviderVehicle>>  opt  =  spVehicleRepo.findByServiceProviderAndFuelTypeAndVehicleMasterAndStatus(sp,list.getFuelType(),list.getVehicleMaster(),"Deleted");
+					if(opt.isPresent())
+					{
+						List<ServiceProviderVehicle> spList = opt.get();
+						if(spList.isEmpty())
+						{
+							System.out.println("ServiceProvider Vehicle Empty");
+							
+						}
+						else
+						{
+							spreqList.add(list);
+							
+						}
+					}
+				}
+				if(spreqList.isEmpty())
+				{
+					response = new ApiResponse(false,"No request Available");
+				}
+				else
+				{
+					response = new ApiResponse(true,"Request Available",spreqList);
+				}
+			}
+			else
+			{
+				System.out.println("Service Provider fetch failed");
+			}
+			
+		}catch(Exception ex) {
+			System.err.println(ex.getMessage());
+			response = new ApiResponse(false, "Service Provider view vehicle failed !", ex.getMessage());
+		}		
+		return response;
+	}
+
+
 }
 

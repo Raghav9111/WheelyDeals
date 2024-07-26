@@ -4,19 +4,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.wheelyDeals.entities.ServiceProviderVehicle;
 import com.wheelyDeals.entities.User;
 import com.wheelyDeals.model.AddSPVehicleModel;
 import com.wheelyDeals.model.AddVehicleChargesModel;
 import com.wheelyDeals.services.SPVehicleService;
 import com.wheelyDeals.services.ServiceProviderChargesService;
+import com.wheelyDeals.services.ServiceProviderService;
 import com.wheelyDeals.services.VehicleImageService;
 import com.wheelyDeals.utils.ApiResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +41,9 @@ public class ServiceProviderController extends BaseController
 	
 	@Autowired
 	private VehicleImageService viService;
+	
+	@Autowired
+	private ServiceProviderService spService;
 	
 	@PostMapping("/addCharges")
 	public ResponseEntity<ApiResponse> addCharges(@RequestBody AddVehicleChargesModel model) {
@@ -130,5 +131,18 @@ public class ServiceProviderController extends BaseController
 			return ResponseEntity.status(200).body(response);
 		}
 	}
+	
+	@GetMapping("/viewRequest")
+	public ResponseEntity<ApiResponse> viewRequest()
+	{
+		ApiResponse response = spService.viewRequest();
+		if(response.getStatus()) {
+			return ResponseEntity.status(200).body(response);
+		}
+		else {
+			return ResponseEntity.status(500).body(response);
+		}
+	}
+	
 	
 }

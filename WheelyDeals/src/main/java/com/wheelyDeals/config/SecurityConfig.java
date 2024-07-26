@@ -52,6 +52,7 @@ public class SecurityConfig {
 						.requestMatchers("/user/**").hasAnyRole("CUSTOMER","SERVICEPROVIDER","ADMIN")
 						.requestMatchers("/serviceProvider/**").hasRole("SERVICEPROVIDER")
 						.requestMatchers("/admin/**").hasRole("ADMIN")
+						.requestMatchers("/customer/**").hasRole("CUSTOMER")
 						.anyRequest().authenticated())
 				.exceptionHandling(t->t.accessDeniedPage("/web/accessDenied"))
 				.formLogin(t->{

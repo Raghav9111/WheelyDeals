@@ -30,9 +30,6 @@ public class VehicleMasterService
 				vm = vmRepo.save(vm);
 				response = new ApiResponse(true, "Vehicle Added !");
 			}
-			else {
-				response = new ApiResponse(false, "Vehicle not added !");
-			}
 		}catch(Exception ex) {
 			System.err.println(ex.getMessage());
 			response = new ApiResponse(false, "Vehicle Save Failed !", ex.getMessage());
