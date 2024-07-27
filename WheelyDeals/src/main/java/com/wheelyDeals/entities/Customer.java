@@ -30,6 +30,4 @@ public class Customer extends User{
 		this.customerName = customerName;
 		this.mobile = mobile;
 	}
-
-
 }
