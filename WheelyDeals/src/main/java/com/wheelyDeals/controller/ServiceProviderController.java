@@ -144,5 +144,16 @@ public class ServiceProviderController extends BaseController
 		}
 	}
 	
-	
+	@GetMapping("/spVehicles")
+	public ResponseEntity<ApiResponse> spVehicles()
+	{
+		ApiResponse response = spService.requestVehicles();
+		if(response.getStatus()) {
+			return ResponseEntity.status(200).body(response);
+		}
+		else {
+			return ResponseEntity.status(500).body(response);
+		}
+
+	}
 }
