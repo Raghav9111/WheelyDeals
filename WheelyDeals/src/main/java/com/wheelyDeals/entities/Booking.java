@@ -47,6 +47,10 @@ public class Booking {
 	@Column
 	private String driverName;
 	
+	@ManyToOne
+	@JoinColumn(name="vehicle_master")
+	private VehicleMaster vehicleMaster;
+	
 	@Column
 	private String driverPhone;
 	
@@ -75,4 +79,7 @@ public class Booking {
 	@Column(nullable = false)
 	private String bookingStatus;
 	
+	@ManyToOne
+	@JoinColumn(name="service_provider_vehicle")
+	private ServiceProviderVehicle spv;
 }

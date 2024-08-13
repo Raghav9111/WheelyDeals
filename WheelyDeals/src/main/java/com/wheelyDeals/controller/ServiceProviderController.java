@@ -144,10 +144,10 @@ public class ServiceProviderController extends BaseController
 		}
 	}
 	
-	@GetMapping("/spVehicles")
-	public ResponseEntity<ApiResponse> spVehicles()
+	@GetMapping("/spVehicles/{reqId}")
+	public ResponseEntity<ApiResponse> spVehicles(@PathVariable(name="reqId") Integer reqId)
 	{
-		ApiResponse response = spService.requestVehicles();
+		ApiResponse response = spService.requestVehicles(reqId);
 		if(response.getStatus()) {
 			return ResponseEntity.status(200).body(response);
 		}
