@@ -128,9 +128,8 @@ public class ServiceProviderService
 		return response;
 	}
 
-	public ApiResponse requestVehicles() {
-		ApiResponse response =null  ;
-		List<ServiceProviderVehicle> resList = new ArrayList<>();
+	public ApiResponse requestVehicles(Integer reqId) {
+		/*List<ServiceProviderVehicle> resList = new ArrayList<>();
 		List<VehicleRequest> spreqList = new ArrayList<>();
 		List<ServiceProviderVehicle> spList = new ArrayList<>();
 		
@@ -211,8 +210,30 @@ public class ServiceProviderService
 		catch(Exception ex) {
 			System.err.println(ex.getMessage());
 			response = new ApiResponse(false, "Service Provider view vehicle failed !", ex.getMessage());
+		}*/
+		try {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = (User) principal;
+			Optional<ServiceProvider> op = serviceRepo.findById(user.getUserId());
+			Optional<VehicleRequest> objVreq = vreqRepo.findById(reqId);
+			if(op.isPresent() && objVreq.isPresent()){
+				ServiceProvider sp = op.get();
+				VehicleRequest vreq =  objVreq.get();
+				Optional<List<ServiceProviderVehicle>> spvObj = spVehicleRepo.findAvailableServiceProviderVehicles(sp, vreq.getVehicleMaster(), vreq.getTripEndDate(), vreq.getTripStartDate());
+				
+				if(spvObj.isPresent()) {
+					return new ApiResponse(true, "Available Vehicles", spvObj.get());
+				}
+				else {
+					return new ApiResponse(false, "Vehicles not available");
+				}
+			}
+			else {
+				return new ApiResponse(false, "Request or Service Provider not found!");
+			}
+		}catch (Exception e) {
+			return new ApiResponse(false, "Vehicle Fetch Exception", e.getMessage());
 		}
-		return response;
 	}
 }
 
