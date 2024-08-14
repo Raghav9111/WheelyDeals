@@ -29,6 +29,6 @@ public interface SPVehicleRepo extends JpaRepository<ServiceProviderVehicle, Int
 	Optional<List<ServiceProviderVehicle>> findByServiceProviderAndFuelTypeAndVehicleMasterAndStatus(ServiceProvider sp, String fuelType,
 			VehicleMaster vehicleMaster,String Status);
 	
-	@Query("SELECT spv FROM ServiceProviderVehicle spv WHERE serviceProvider = ?1 AND vehicleMaster = ?2  AND spv NOT IN (SELECT b.spv FROM Booking b WHERE b.vehicleMaster = ?2 AND (b.tripStartDate < ?3 AND b.tripEndDate > ?4))")
-	Optional<List<ServiceProviderVehicle>> findAvailableServiceProviderVehicles(ServiceProvider sp,VehicleMaster vm,LocalDate endDate, LocalDate startDate);
+	@Query("SELECT spv FROM ServiceProviderVehicle spv WHERE serviceProvider = ?1 AND vehicleMaster = ?2 AND fuelType = ?5 AND status != ?6 AND spv NOT IN (SELECT b.spv FROM Booking b WHERE b.vehicleMaster = ?2 AND (b.tripStartDate < ?3 AND b.tripEndDate > ?4))")
+	Optional<List<ServiceProviderVehicle>> findAvailableServiceProviderVehicles(ServiceProvider sp,VehicleMaster vm,LocalDate endDate, LocalDate startDate, String fuelType, String status);
 }
