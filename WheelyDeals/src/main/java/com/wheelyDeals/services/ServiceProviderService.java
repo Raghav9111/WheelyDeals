@@ -86,7 +86,7 @@ public class ServiceProviderService
 			if(op.isPresent())
 			{
 				ServiceProvider sp = op.get();
-				List<VehicleRequest> vreqList =  vreqRepo.findAll();
+				List<VehicleRequest> vreqList =  vreqRepo.findAllByRequestStatus("Pending").get();
 				
 				for(VehicleRequest list : vreqList)
 				{
@@ -219,7 +219,7 @@ public class ServiceProviderService
 			if(op.isPresent() && objVreq.isPresent()){
 				ServiceProvider sp = op.get();
 				VehicleRequest vreq =  objVreq.get();
-				Optional<List<ServiceProviderVehicle>> spvObj = spVehicleRepo.findAvailableServiceProviderVehicles(sp, vreq.getVehicleMaster(), vreq.getTripEndDate(), vreq.getTripStartDate());
+				Optional<List<ServiceProviderVehicle>> spvObj = spVehicleRepo.findAvailableServiceProviderVehicles(sp, vreq.getVehicleMaster(), vreq.getTripEndDate(), vreq.getTripStartDate(), vreq.getFuelType(), "Deleted");
 				
 				if(spvObj.isPresent()) {
 					return new ApiResponse(true, "Available Vehicles", spvObj.get());
